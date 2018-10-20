@@ -25,6 +25,21 @@ const appState = {
     }
 }
 
+// 定义一个dispatch（分派的意思）函数，负责数据的修改
+function dispatch(action){
+    switch(action.type){
+        case 'UPDATE_TITLE_TEXT':
+            appState.title.text = action.text
+            break
+        case 'UPDATE_TITLE_COLOR':
+            appState.title.color = action.color
+            break
+        default:
+            break
+    }
+}
+
+
 // 渲染 App
 function renderApp(appState){
     renderTitle(appState.title)  // 渲染title
@@ -46,4 +61,9 @@ function renderContent(content){
 }
 
 // 渲染整个App
-renderApp(appState)
+renderApp(appState)  // 首次渲染
+dispatch({ type: 'UPDATE_TITLE_TEXT', text: '《React.js Redux实现》' }) // 修改标题文本
+dispatch({ type: 'UPDATE_TITLE_COLOR', color: 'blue' }) // 修改标题颜色
+
+// 重新渲染
+renderApp(appState)  // 发现变了颜色
