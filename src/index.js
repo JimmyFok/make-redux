@@ -14,7 +14,10 @@
 /**
  * 应用的状态
  */
-const appState = {
+
+
+ // 1、store区
+let appState = {
     title: {
         text: 'React.js Redux实现',
         color: 'red',
@@ -26,17 +29,26 @@ const appState = {
 }
 
 // 定义一个dispatch（分派的意思）函数，负责数据的修改
-function dispatch(action){
+// dispatch抽离出来state和action
+function stateChanger(state, action){
     switch(action.type){
         case 'UPDATE_TITLE_TEXT':
-            appState.title.text = action.text
+            state.title.text = action.text
             break
         case 'UPDATE_TITLE_COLOR':
-            appState.title.color = action.color
+            state.title.color = action.color
             break
         default:
             break
     }
+}
+
+// 创立createStore函数（意思就是store包含了状态和改变状态的方法）
+function createStore(state, stateChanger){
+    const getState = () => state
+    // action留做调用dispatch时传入之用
+    const dispatch = (action) => stateChanger(state, action)
+    return {getState, dispatch}
 }
 
 
@@ -60,10 +72,17 @@ function renderContent(content){
     contentDOM.style.color = content.color  // contentDOM的样式设置
 }
 
+/**
+ * 修改渲染方式，通过之前抽离了store和修改数据方法两个参数，让渲染更为灵活
+ */
+
+// 运行函数并返回对象
+const store = createStore(appState, stateChanger)
+
 // 渲染整个App
-renderApp(appState)  // 首次渲染
-dispatch({ type: 'UPDATE_TITLE_TEXT', text: '《React.js Redux实现》' }) // 修改标题文本
-dispatch({ type: 'UPDATE_TITLE_COLOR', color: 'blue' }) // 修改标题颜色
+renderApp(store.getState())  // 首次渲染
+store.dispatch({ type: 'UPDATE_TITLE_TEXT', text: '《React.js Redux实现》' }) // 修改标题文本
+store.dispatch({ type: 'UPDATE_TITLE_COLOR', color: 'blue' }) // 修改标题颜色
 
 // 重新渲染
-renderApp(appState)  // 发现变了颜色
+renderApp(store.getState())  // 发现变了颜色
