@@ -43,12 +43,28 @@ function stateChanger(state, action){
     }
 }
 
-// 创立createStore函数（意思就是store包含了状态和改变状态的方法）
+// 改造createStore的方法实现数据的监控
 function createStore(state, stateChanger){
+
+    // 增加监听器数组
+    const listeners = []
+
+    // 定义订阅函数，实现将多个监听器加入监听数组中
+    const subscribe = (listener) => listeners.push(listener)
+
+    // 这里没变
     const getState = () => state
+
     // action留做调用dispatch时传入之用
-    const dispatch = (action) => stateChanger(state, action)
-    return {getState, dispatch}
+    const dispatch = (action) => {
+        stateChanger(state, action)
+        // 增加了监听器（forEach会改变原数组，相当于将监听器中的每个函数都从定义编程成直接执行）
+        // 从而实现了监听器的运行
+        listeners.forEach((listener) => listener())
+    }
+
+    // 增加了订阅函数作为返回对象的新元素
+    return {getState, dispatch, subscribe}
 }
 
 
@@ -79,10 +95,13 @@ function renderContent(content){
 // 运行函数并返回对象
 const store = createStore(appState, stateChanger)
 
+// 传入监听的函数
+store.subscribe(()=> renderApp(store.getState()))
+
 // 渲染整个App
 renderApp(store.getState())  // 首次渲染
 store.dispatch({ type: 'UPDATE_TITLE_TEXT', text: '《React.js Redux实现》' }) // 修改标题文本
 store.dispatch({ type: 'UPDATE_TITLE_COLOR', color: 'blue' }) // 修改标题颜色
+// 所以以后每次修改都会通过监听器来同步
+// 这就属于观察者模式
 
-// 重新渲染
-renderApp(store.getState())  // 发现变了颜色
