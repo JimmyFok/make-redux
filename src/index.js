@@ -33,13 +33,23 @@ let appState = {
 function stateChanger(state, action){
     switch(action.type){
         case 'UPDATE_TITLE_TEXT':
-            state.title.text = action.text
-            break
+            return {
+                ...state,
+                title:{
+                    ...state.title,
+                    text: action.text
+                }
+            }
         case 'UPDATE_TITLE_COLOR':
-            state.title.color = action.color
-            break
+            return {
+                ...state,
+                title:{
+                    ...state.title,
+                    color: action.color
+                }
+            }
         default:
-            break
+            return state  // 没有修改返回原来的对象
     }
 }
 
@@ -57,7 +67,7 @@ function createStore(state, stateChanger){
 
     // action留做调用dispatch时传入之用
     const dispatch = (action) => {
-        stateChanger(state, action)
+        state = stateChanger(state, action)  // 构建新对象并返回了对象所以应该改为赋值
         // 增加了监听器（forEach会改变原数组，相当于将监听器中的每个函数都从定义编程成直接执行）
         // 从而实现了监听器的运行
         listeners.forEach((listener) => listener())
@@ -133,4 +143,4 @@ store.dispatch({ type: 'UPDATE_TITLE_COLOR', color: 'blue' }) // 修改标题颜
 // 1、利用每次都不修改原来数据的方法而通过新建新的对象并覆盖对应的变化的数据。
 // 2、关键是新的对象状态里面的属性都是对象，相同的部分就会指向同一个，不相同的当然是指向不同。因为都是引用类型的关系所以可以判断那些属性相等哪些不相等。
 // 3、基于以上的不变共享的结构存在，所以可以优化渲染性能。
-// 
+// 4、因为引用到的对象只有new和old，所以进行修改后都只会保存两个对象，其他对象会自动回收。（主要是dispatch里面state重新指向了新的对象，所以会释放原有的对象）
