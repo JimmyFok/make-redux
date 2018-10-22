@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ReactDOM from 'react-dom'
-import Header from './Header'
+import Header from './components/Header'
 import Content from './Content'
 import './index.css'
 

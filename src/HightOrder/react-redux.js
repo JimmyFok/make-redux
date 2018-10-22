@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
+
 // 因为context有很多内容需要指向性地告诉应该如何处理数据
 // 相当于处理数据的函数，需要用时自行定义
 // const mapStateToProps = (state) =>{
