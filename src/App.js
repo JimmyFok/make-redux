@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom'
 import Header from './Header'
 import Content from './Content'
 import './index.css'
+import { Provider } from './HightOrder/react-redux'
 
 function createStore(reducer){
     let state = null
@@ -37,23 +38,25 @@ const store = createStore(themeReducer)
 
 class App extends Component {
 
-  // 别忘了Context的使用语法
-  // 检测context的类型
-  static childContextTypes = {
-    store: PropTypes.object
-  }
+  // // 别忘了Context的使用语法
+  // // 检测context的类型
+  // static childContextTypes = {
+  //   store: PropTypes.object
+  // }
 
-  // 定义子类可获取的Context，这样引入的子类都能直接引用该context，用this.context
-  getChildContext(){
-    return { store }
-  }
+  // // 定义子类可获取的Context，这样引入的子类都能直接引用该context，用this.context
+  // getChildContext(){
+  //   return { store }
+  // }
 
   render() {
     return (
-      <div className="App">
-        <Header />
-        <Content />
-      </div>
+      <Provider store= {store}>
+        <div className="App">
+          <Header />
+          <Content />
+        </div>      
+      </Provider>      
     );
   }
 }

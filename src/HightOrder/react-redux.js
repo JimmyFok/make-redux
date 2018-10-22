@@ -54,3 +54,29 @@ export const connect = (mapStateToProps, mapDispatchToProps) => (WrappedComponen
 
     return Connect
 }
+
+// 将原来嵌套在App.js里面获取context的设置放到这里
+export class Provider extends Component {
+
+    // provider是供应者的意思
+    static propTypes = {
+      store: PropTypes.object,
+      children: PropTypes.any
+    }
+  
+    static childContextTypes = {
+      store: PropTypes.object
+    }
+  
+    getChildContext () {
+      return {
+        store: this.props.store
+      }
+    }
+  
+    render () {
+      return (
+        <div>{this.props.children}</div>
+      )
+    }
+  }
