@@ -12,7 +12,7 @@ import PropTypes from 'prop-types'
 //     }
 // }
 
-export const connect = (mapStateToProps) => (WrappedComponent) => {
+export const connect = (mapStateToProps, mapDispatchToProps) => (WrappedComponent) => {
     class Connect extends Component {
         static contextTypes = {
             store: PropTypes.object
@@ -34,10 +34,14 @@ export const connect = (mapStateToProps) => (WrappedComponent) => {
         _updateProps(){
             const { store } = this.context
             // 额外传入props
-            let stateProps = mapStateToProps(store.getState(), this.props) // state转换Props传递
+            let stateProps = mapStateToProps?
+                mapStateToProps(store.getState(), this.props):{} // state转换Props传递
+            let dispatchProps = mapDispatchToProps?
+                mapDispatchToProps(store.dispatch, this.props):{}
             this.setState({
-                allprops:{  // 根据定义的this.state格式来重新定义state
+                allProps:{  // 根据定义的this.state格式来重新定义state
                     ...stateProps, // context取得的state再转成的props
+                    ...dispatchProps, // 将监听都函数都转化为Props并存起来
                     ...this.props // connect的props
                 }
             })
